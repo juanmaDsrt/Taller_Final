@@ -7,4 +7,5 @@
 /.env
 /*.env
 /images.zip
-/DjangoProjectBase/openAI.env
+/openAI.env
+../openAI.env

@@ -41,7 +41,7 @@ class Command(BaseCommand):
         self.stdout.write(f"Found {movies.count()} movies")
 
         # ✅ Prepare CSV file
-        output_file = 'updated_movie_descriptions.csv'
+        output_file = '../DjangoProjectBase/updated_movie_descriptions.csv'
         with open(output_file, mode='w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(['Title', 'Updated Description'])  # Header

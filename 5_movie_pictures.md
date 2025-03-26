@@ -19,7 +19,7 @@ Generar imágenes personalizadas por cada película usando la API de OpenAI y ac
 
 🚫 **No debes quitar el `break`.**
 
-El código lo puedes encontrar en el archivo [update_images.py](aux_files/update_images.py)
+El código lo puedes encontrar en el archivo [update_images.py](DjangoProjectBase/movie/management/commands/update_images.py)
 
 ---
 
