@@ -1,12 +1,14 @@
-from django.shortcuts import render
 from django.http import HttpResponse
-
-from .models import Movie
-
 import matplotlib.pyplot as plt
 import matplotlib
 import io
 import urllib, base64
+import os
+import numpy as np
+from django.shortcuts import render
+from dotenv import load_dotenv
+from openai import OpenAI
+from .models import Movie
 
 def home(request):
     #return HttpResponse('<h1>Welcome to Home Page</h1>')
@@ -123,3 +125,42 @@ def generate_bar_chart(data, xlabel, ylabel):
     buffer.close()
     graphic = base64.b64encode(image_png).decode('utf-8')
     return graphic
+
+load_dotenv('../openAI.env')
+client = OpenAI(api_key=os.environ.get('openai_apikey'))
+
+def cosine_similarity(a, b):
+    return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
+
+def recomendar_pelicula(request):
+    resultado = None
+
+    if request.method == 'POST':
+        prompt = request.POST.get('prompt')
+
+        # Obtener embedding del prompt
+        response = client.embeddings.create(
+            input=[prompt],
+            model="text-embedding-3-small"
+        )
+        prompt_emb = np.array(response.data[0].embedding, dtype=np.float32)
+
+        # Comparar con películas
+        best_movie = None
+        max_similarity = -1
+
+        for movie in Movie.objects.all():
+            movie_emb = np.frombuffer(movie.emb, dtype=np.float32)
+            similarity = cosine_similarity(prompt_emb, movie_emb)
+
+            if similarity > max_similarity:
+                max_similarity = similarity
+                best_movie = movie
+
+        resultado = {
+            "movie": best_movie,
+            "similarity": round(max_similarity, 4),
+            "prompt": prompt
+        }
+
+    return render(request, 'recomendar.html', {"resultado": resultado})

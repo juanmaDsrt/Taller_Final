@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white text-center">
+          <h3>🎬 Sistema de Recomendación de Películas</h3>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="prompt" class="form-label">Describe lo que quieres ver</label>
+              <input type="text" id="prompt" name="prompt" class="form-control" placeholder="Ej: película de ciencia ficción en el espacio" required>
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-success">🔍 Recomendar</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {% if resultado %}
+      <div class="card mt-4 shadow-sm">
+        <div class="card-header bg-info text-white">
+          <h4>🎯 Resultado de la recomendación</h4>
+        </div>
+        <div class="card-body">
+          <p><strong>Prompt:</strong> {{ resultado.prompt }}</p>
+          <p><strong>Película recomendada:</strong> {{ resultado.movie.title }}</p>
+          <p><strong>Similitud:</strong> {{ resultado.similarity }}</p>
+
+          <div class="text-center mb-3">
+            <img src="{{ resultado.movie.image.url }}" class="img-fluid rounded shadow-sm" alt="{{ resultado.movie.title }}" style="max-width: 300px;">
+          </div>
+
+          <p><strong>Descripción:</strong> {{ resultado.movie.description }}</p>
+          <p><strong>Género:</strong> {{ resultado.movie.genre }}</p>
+          <p><strong>Año:</strong> {{ resultado.movie.year }}</p>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
